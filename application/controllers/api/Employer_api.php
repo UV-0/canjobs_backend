@@ -1,4 +1,7 @@
-<!-- <?php
+<?php
+Header('Access-Control-Allow-Origin: *'); //for allow any domain, insecure
+Header('Access-Control-Allow-Headers: *'); //for allow any headers, insecure
+Header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE'); //
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 require APPPATH.'libraries/REST_Controller.php';
@@ -16,123 +19,28 @@ class Employer_api extends REST_Controller{
     $this->load->helper("security");
     $this->load->helper('url');
 
-    $headers = $this->input->request_headers(); 
-        // var_dump($headers['Authorization']);exit;
-		$this->decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
-       if (!$this->decodedToken || $this->decodedToken['status'] != "1") {
-            $err = array(
-                'status'=>false,
-                'message'=>'Unauthorised Token',
-                'data'=>[]
-            );
-            // print_r($err);
-            echo json_encode($err);
-            exit;
-          //    return $this->response($err,401);
-          //  die;
-          }
+    // $headers = $this->input->request_headers(); 
+    //     // var_dump($headers['Authorization']);exit;
+		// $this->decodedToken = $this->authorization_token->validateToken($headers['Authorization']);
+    //    if (!$this->decodedToken || $this->decodedToken['status'] != "1") {
+    //         $err = array(
+    //             'status'=>false,
+    //             'message'=>'Unauthorised Token',
+    //             'data'=>[]
+    //         );
+    //         // print_r($err);
+    //         echo json_encode($err);
+    //         exit;
+    //       //    return $this->response($err,401);
+    //       //  die;
+    //       }
         }
-        
-
   /*
     INSERT: POST REQUEST TYPE
     UPDATE: PUT REQUEST TYPE
     DELETE: DELETE REQUEST TYPE
     LIST: Get REQUEST TYPE
   */
-
-  // public function index_post(){
-    // insert data method
-    //  $err = array(
-    //         'status'=>true,
-    //         'message'=>'successfully fetched profile',
-    //         'data'=> ''
-    //     );
-    //     $this->response($err,200); 
-    // print_r( $existing_email = $this->post("email"));die;
-
-    // collecting form data inputs
-    
-  //   $name = $this->security->xss_clean($this->input->post("name"));
-  //   $email = $this->security->xss_clean($this->input->post("email"));
-  //   $password = $this->security->xss_clean($this->input->post("password"));
-  //   $conf_password = $this->security->xss_clean($this->input->post("conf_password"));
-  //   $mobile = $this->security->xss_clean($this->input->post("mobile"));
-  //   $work_status = $this->security->xss_clean($this->input->post("work_status"));
-  //   // $cv = $this->security->xss_clean($this->input->post("cv"));
-  //   $cv_base_encode = $this->post("cv");
-	// 	$cv = base64_decode($cv_base_encode);
-  //   if(!empty($cv)){
-  //   $file_name_for_upload = time().'.docx';
-	// 	$file_name = base_url().'uploads/'.$file_name_for_upload;
-	// 	file_put_contents('./uploads/'.$file_name_for_upload, $cv);
-  //   }
-  //   //employee_detail
-    
-  //   // form validation for inputs
-  //   $this->form_validation->set_rules("name", "Name", "required");
-  //   $this->form_validation->set_rules("email", "Email", "required|valid_email");
-  //   $this->form_validation->set_rules("password", "password", "required");
-  //   $this->form_validation->set_rules("conf_password", "conf_password", "required|matches[password]");
-  //   $this->form_validation->set_rules("mobile", "Mobile", "required");
-  //   $this->form_validation->set_rules("work_status", "work_status", "required");
-
-  //   // checking form submittion have any error or not
-  //   if($this->form_validation->run() === FALSE){
-
-  //     // we have some errors
-  //     $this->response(array(
-  //       "status" => 0,
-  //       "message" => "All fields are needed"
-  //     ) , REST_Controller::HTTP_NOT_FOUND);
-  //     return;
-  // }   
-  //    $existing_email = $this->post("email");
-  //    $existing_employee = $this->emp_model->get_employee_by_email($existing_email);
-  //       if($existing_employee){
-  //       $this->response(array(
-  //       "status" => 0,
-  //       "message" => "Email already exists"
-  //       ), REST_Controller::HTTP_CONFLICT);
-  //       return;
-  //       }
-
-  //     if(!empty($name) && !empty($email) && !empty($password) && !empty($conf_password) && !empty($mobile)  && !empty($work_status)){
-  //       // all values are available
-  //       $employee = array(
-  //         "name" => $name,
-  //         "email" => $email,
-  //         "password" => $password,
-  //         "mobile" => $mobile,
-  //         "work_experience_level" => $work_status,
-  //         "cv" => $file_name
-  //       );
-  //       // print_r($employee); die;
-  //       if($this->emp_model->add_update($employee)){
-
-  //         $this->response(array(
-  //           "status" => 1,
-  //           "message" => "Employee has been registered"
-  //         ), REST_Controller::HTTP_OK);
-  //         return;
-  //       }else{
-
-  //         $this->response(array(
-  //           "status" => 0,
-  //           "message" => "Failed to create student"
-  //         ), REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
-  //         return;
-  //       }
-  //     }else{
-  //       // we have some empty field
-  //       $this->response(array(
-  //         "status" => 0,
-  //         "message" => "All fields are needed"
-  //       ), REST_Controller::HTTP_NOT_FOUND);
-  //     }
-
-  // }
-
   // PUT: <project_url>/index.php/student
   public function company_detail_put(){
       // updating data method
@@ -443,6 +351,11 @@ class Employer_api extends REST_Controller{
           "category_name" => $data->category_name,
           "category_type" => $data->category_type,
         );
+        if(isset($data->job_category_id)){
+          if(!empty($data->job_category_id)){
+            $category_detail["job_category_id"] = $data->job_category_id;
+          }
+         }
         // print_r($category_detail); die;
         // $this->employee_model->updatePersonal_Educational_details($emp_info);
     
@@ -489,42 +402,42 @@ class Employer_api extends REST_Controller{
           ), REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
    }
-   public function applied_candidateList_get(){ 
-        $job_id = $this->get('job_id');
-         if($data = $this->employer_model->getAppliedCandidateList($job_id)){
+  //  public function applied_candidateList_get(){ 
+  //       $job_id = $this->get('job_id');
+  //        if($data = $this->employer_model->getAppliedCandidateList($job_id)){
 
-            $this->response(array(
-              "status" => 1,
-              "message" => "successfully",
-              "data" => json_encode($data)
-            ), REST_Controller::HTTP_OK);
-        }else{
+  //           $this->response(array(
+  //             "status" => 1,
+  //             "message" => "successfully",
+  //             "data" => $data
+  //           ), REST_Controller::HTTP_OK);
+  //       }else{
 
-          $this->response(array(
-            "status" => 0,
-            "messsage" => "Failed to fetch data"
-          ), REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
-        }
-   }
+  //         $this->response(array(
+  //           "status" => 0,
+  //           "messsage" => "Failed to fetch data"
+  //         ), REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+  //       }
+  //  }
    public function view_jobs_get(){
       $filter = array("category_type"=>$this->get('filter_category'),
                       "job_type"=>$this->get('filter_job_swap'),
                       "keyskill"=>$this->get('filter_keyskill'),
                       "location"=>$this->get('filter_location'),);
-      // print_r($filter);die;
+      // print_r($);die;
       // $data = $this->employer_model->viewJobs($company_id);
        if($data = $this->employer_model->viewJobs($filter)){
 
             $this->response(array(
               "status" => 1,
-              "message" => "successfully",
-              "data" => json_encode($data)
+              "message" => "successfull",
+              "data" => $data
             ), REST_Controller::HTTP_OK);
         }else{
 
           $this->response(array(
             "status" => 0,
-            "messsage" => "Failed to fetch data"
+            "messsage" => "No data found"
           ), REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
    }
@@ -539,7 +452,7 @@ class Employer_api extends REST_Controller{
         $this->response(array(
           "status" => 1,
           "message" => "Jobs found",
-          "data" => json_encode($jobs)
+          "data" => $jobs
         ), REST_Controller::HTTP_OK);
       }else{
 
@@ -561,7 +474,7 @@ class Employer_api extends REST_Controller{
         $this->response(array(
           "status" => 1,
           "message" => "Job Category found",
-          "data" => json_encode($jobs)
+          "data" => $jobs
         ), REST_Controller::HTTP_OK);
       }else{
 
@@ -574,7 +487,7 @@ class Employer_api extends REST_Controller{
   }
     public function allEmployer_get(){
       // $employee_id = $this->get('employee_id');
-      $employer = $this->employer_model->getAllEmployer();
+      $employer = $this->employer_model->getEmployer();
 
       //print_r($query->result());
 
@@ -583,7 +496,7 @@ class Employer_api extends REST_Controller{
         $this->response(array(
           "status" => 1,
           "message" => "Employer found",
-          "data" => json_encode($employer)
+          "data" => $employer,
         ), REST_Controller::HTTP_OK);
       }else{
 
@@ -594,7 +507,75 @@ class Employer_api extends REST_Controller{
         ), REST_Controller::HTTP_NOT_FOUND);
       }
   }
+    public function getEmployer_post(){
+      $data = json_decode(file_get_contents("php://input"));
 
+      // print_r($company_id);die;
+      $company_detail['company_detail']= $this->employer_model->getEmployer($data->company_id);
+      $company_detail['kyc_detail'] = $this->employer_model->getCompany_kyc($data->company_id);
+      
+      if(!empty($company_detail['company_detail'])){
+
+        $this->response(array(
+          "status" => 1,
+          "message" => "Employer found",
+          "data" => $company_detail
+        ), REST_Controller::HTTP_OK);
+      }else{
+
+        $this->response(array(
+          "status" => 0,
+          "message" => "No employer found",
+          "data" => $company_detail
+        ), REST_Controller::HTTP_NOT_FOUND);
+      }
+  }
+   public function employer_delete($company_id){
+      if($this->employer_model->deleteEmployer($company_id)){
+        // retruns true
+        $this->response(array(
+          "status" => 1,
+          "message" => "company has been deleted"
+        ), REST_Controller::HTTP_OK);
+      }else{
+        // return false
+        $this->response(array(
+          "status" => 0,
+          "message" => "Failed to delete company"
+        ), REST_Controller::HTTP_NOT_FOUND);
+      }
+  }
+   public function jobCategory_delete($job_category_id){
+      if($this->employer_model->deleteJobCategory($job_category_id)){
+        // retruns true
+        $this->response(array(
+          "status" => 1,
+          "message" => "job category has been deleted"
+        ), REST_Controller::HTTP_OK);
+      }else{
+        // return false
+        $this->response(array(
+          "status" => 0,
+          "message" => "Failed to delete job category"
+        ), REST_Controller::HTTP_NOT_FOUND);
+      }
+  }
+   public function job_delete($job_id){
+      if($this->employer_model->deleteJob($job_id)){
+        // retruns true
+        $this->response(array(
+          "status" => 1,
+          "message" => "job has been deleted"
+        ), REST_Controller::HTTP_OK);
+      }else{
+        // return false
+        $this->response(array(
+          "status" => 0,
+          "message" => "Failed to delete job"
+        ), REST_Controller::HTTP_NOT_FOUND);
+      }
+  }
+}
   // public function employeeCareer_detail_put(){
   //     // updating data method
   //     //echo "This is PUT Method";
@@ -709,9 +690,95 @@ class Employer_api extends REST_Controller{
   //       ), REST_Controller::HTTP_NOT_FOUND);
   //     }
 
+// public function index_post(){
+    // insert data method
+    //  $err = array(
+    //         'status'=>true,
+    //         'message'=>'successfully fetched profile',
+    //         'data'=> ''
+    //     );
+    //     $this->response($err,200); 
+    // print_r( $existing_email = $this->post("email"));die;
 
+    // collecting form data inputs
+    
+  //   $name = $this->security->xss_clean($this->input->post("name"));
+  //   $email = $this->security->xss_clean($this->input->post("email"));
+  //   $password = $this->security->xss_clean($this->input->post("password"));
+  //   $conf_password = $this->security->xss_clean($this->input->post("conf_password"));
+  //   $mobile = $this->security->xss_clean($this->input->post("mobile"));
+  //   $work_status = $this->security->xss_clean($this->input->post("work_status"));
+  //   // $cv = $this->security->xss_clean($this->input->post("cv"));
+  //   $cv_base_encode = $this->post("cv");
+	// 	$cv = base64_decode($cv_base_encode);
+  //   if(!empty($cv)){
+  //   $file_name_for_upload = time().'.docx';
+	// 	$file_name = base_url().'uploads/'.$file_name_for_upload;
+	// 	file_put_contents('./uploads/'.$file_name_for_upload, $cv);
+  //   }
+  //   //employee_detail
+    
+  //   // form validation for inputs
+  //   $this->form_validation->set_rules("name", "Name", "required");
+  //   $this->form_validation->set_rules("email", "Email", "required|valid_email");
+  //   $this->form_validation->set_rules("password", "password", "required");
+  //   $this->form_validation->set_rules("conf_password", "conf_password", "required|matches[password]");
+  //   $this->form_validation->set_rules("mobile", "Mobile", "required");
+  //   $this->form_validation->set_rules("work_status", "work_status", "required");
 
-  }
+  //   // checking form submittion have any error or not
+  //   if($this->form_validation->run() === FALSE){
 
+  //     // we have some errors
+  //     $this->response(array(
+  //       "status" => 0,
+  //       "message" => "All fields are needed"
+  //     ) , REST_Controller::HTTP_NOT_FOUND);
+  //     return;
+  // }   
+  //    $existing_email = $this->post("email");
+  //    $existing_employee = $this->emp_model->get_employee_by_email($existing_email);
+  //       if($existing_employee){
+  //       $this->response(array(
+  //       "status" => 0,
+  //       "message" => "Email already exists"
+  //       ), REST_Controller::HTTP_CONFLICT);
+  //       return;
+  //       }
 
- ?> -->
+  //     if(!empty($name) && !empty($email) && !empty($password) && !empty($conf_password) && !empty($mobile)  && !empty($work_status)){
+  //       // all values are available
+  //       $employee = array(
+  //         "name" => $name,
+  //         "email" => $email,
+  //         "password" => $password,
+  //         "mobile" => $mobile,
+  //         "work_experience_level" => $work_status,
+  //         "cv" => $file_name
+  //       );
+  //       // print_r($employee); die;
+  //       if($this->emp_model->add_update($employee)){
+
+  //         $this->response(array(
+  //           "status" => 1,
+  //           "message" => "Employee has been registered"
+  //         ), REST_Controller::HTTP_OK);
+  //         return;
+  //       }else{
+
+  //         $this->response(array(
+  //           "status" => 0,
+  //           "message" => "Failed to create student"
+  //         ), REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+  //         return;
+  //       }
+  //     }else{
+  //       // we have some empty field
+  //       $this->response(array(
+  //         "status" => 0,
+  //         "message" => "All fields are needed"
+  //       ), REST_Controller::HTTP_NOT_FOUND);
+  //     }
+
+  // }
+ 

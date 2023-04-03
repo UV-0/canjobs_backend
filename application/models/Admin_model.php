@@ -1,53 +1,15 @@
-// <?php
+<?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-/**
-*
-*/
 class Admin_model extends CI_Model
 {
-public function get_employee($search,$filter){
-   
-    //    $query = "SELECT *
-    //                 FROM employee
-    //                 LEFT JOIN employee_detail
-    //                 ON employee.id = employee_detail.employee_id
-    //                 WHERE employee.is_deleted <> '1'";
-                                
-    //      // Add search criteria to the query
-    //     if (!empty($search)) {
-    //       $query .= " AND (employee.name LIKE '%$search%' OR employee.email LIKE '%$search%' OR employee.language LIKE '%$search%')";
-    //     }
-      
-    //     // Add filter criteria to the query
-    //     if (!empty($filter)) {
-    //       $query .= " AND employee.gender = '$filter' OR employee_detail.employer_location = '$filter'";
-    //     }
-      
-    //     $result = $this->db->query($query);
-    //               print_r($this->db->last_query());
-    //     return $result->result_array();
-}
-
-public function get_employer_by_email($email){
-            //  $email = $employee['email'];
-    // print_r($email); die;
-      
+public function get_admin_by_email($email){
             $this->db->where('email', $email);
-            $query = $this->db->get('employer');
+            $query = $this->db->get('admin');
             
             if ($query->num_rows() > 0) {
             // print_r($this->db->last_query()); die;
                 return $query;
             }
-}
-public function insert_employer($employer = array()){
-   
-  
-            // print_r($employee); die; 
-           return $this->db->insert('employer', $employer);
-            // print_r($this->db->last_query());
-              // return 1;
-            
 }
 public function checkLogin($credentials)
 {
@@ -62,6 +24,19 @@ public function checkLogin($credentials)
             return false;
         }
 }
+public function insert_admin($admin = array()){
+           return $this->db->insert('admin', $admin);           
+}
+public function addFollowup($followup_detail){
+           return $this->db->insert('follow_up', $followup_detail);            
+}
+public function getFollowup($id){
+                $this->db->where('job_id',$id['job_id']);
+                $this->db->where('employee_id',$id['employee_id']);
+                $res = $this->db->get('follow_up');
+                // print_r($this->db->last_query());
+                return $res->result_array();
+  }
 public function add_update($emp_info){
   print_r($emp_info);die;
     $emp_id = $emp_info['company_id'];
